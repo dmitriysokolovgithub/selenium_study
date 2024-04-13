@@ -1,5 +1,8 @@
 import pytest
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.common.exceptions import NoSuchElementException
 import time
 
 
@@ -8,4 +11,10 @@ def test_shopping_cart_existence(browser):
     browser.get(url)
     time.sleep(5)
     button_element = browser.find_element(By.XPATH, r"//button[contains(@class,'btn-add-to-basket')]")
-    assert True
+    try:
+        button_element = WebDriverWait(browser, 10).until(EC.element_to_be_clickable(
+            (By.XPATH, r"//button[contains(@class,'btn-add-to-basket')]")))
+        button_search_result = True
+    except NoSuchElementException:
+        button_search_result = False
+    assert button_search_result
